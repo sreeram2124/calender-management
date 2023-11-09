@@ -1,0 +1,33 @@
+body {
+    font-family: sans-serif;
+  }
+  
+  #calendar {
+    width: 600px;
+    margin: 0 auto;
+  }
+  
+  #calendar th {
+    background-color: #ccc;
+    padding: 5px;
+    text-align: center;
+  }
+  
+  #calendar td {
+    padding: 5px;
+  }
+  
+  .event {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+  
+  .event-name {
+    font-weight: bold;
+  }
+  
+  .event-description {
+    font-size: 12px;
+  }
+  

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .calendar-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-gap: 10px;
+        }
+        .calendar th,
+        .calendar td {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+        .calendar th {
+            background-color: #007BFF;
+            color: #fff;
+        }
+        .event-container {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .event {
+            background-color: #007BFF;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <h1>Monthly Calendar</h1>
+        <div class="calendar" id="calendar">
+            <div class="calendar-header">Sun</div>
+            <div class="calendar-header">Mon</div>
+            <div class="calendar-header">Tue</div>
+            <div class="calendar-header">Wed</div>
+            <div class="calendar-header">Thu</div>
+            <div class="calendar-header">Fri</div>
+            <div class="calendar-header">Sat</div>
+        </div>
+        <div class="event-container">
+            <h2>Add Event</h2>
+            <label for="eventDate">Date: </label>
+            <input type="date" id="eventDate">
+            <br>
+            <label for="eventName">Event: </label>
+            <input type="text" id="eventName">
+            <button onclick="addEvent()">Add Event</button>
+        </div>
+        <div class="event-container" id="eventList">
+            <h2>Events</h2>
+        </div>
+    </div>
+    <script>
+        const events = {};
+
+        function generateCalendar(year, month) {
+            const today = new Date();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const calendar = document.getElementById("calendar");
+            calendar.innerHTML = '';
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                calendar.appendChild(document.createElement('div'));
+            }
+
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const day = document.createElement('div');
+                day.textContent = i;
+                day.onclick = function () {
+                    const eventDate = year + '-' + (month + 1).toString().padStart(2, '0') + '-' + i.toString().padStart(2, '0');
+                    document.getElementById('eventDate').value = eventDate;
+                };
+                if (events.hasOwnProperty(i)) {
+                    day.classList.add('event');
+                    day.onclick = function () {
+                        removeEvent(i);
+                    };
+                }
+                calendar.appendChild(day);
+            }
+        }
+
+        function addEvent() {
+            const eventDate = document.getElementById('eventDate').value;
+            const eventName = document.getElementById('eventName').value;
+
+            if (eventDate && eventName) {
+                const day = parseInt(eventDate.split('-')[2]);
+                if (!events[day]) {
+                    events[day] = [];
+                }
+                events[day].push(eventName);
+                updateEventList();
+            } else {
+                alert('Please enter both date and event name.');
+            }
+        }
+
+        function removeEvent(day) {
+            if (events.hasOwnProperty(day)) {
+                delete events[day];
+                updateEventList();
+            }
+        }
+
+        function updateEventList() {
+            const eventList = document.getElementById('eventList');
+            eventList.innerHTML = '<h2>Events</h2>';
+            for (const day in events) {
+                eventList.innerHTML += `<div class="event" onclick="removeEvent(${day})">${day}: ${events[day].join(', ')}</div>`;
+            }
+            generateCalendar(new Date().getFullYear(), new Date().getMonth());
+        }
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+
+        generateCalendar(year, month);
+    </script>
+</body>
+</html>
